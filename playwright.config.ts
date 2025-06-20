@@ -7,10 +7,14 @@ if (!prNumber && isCI) {
   throw new Error('В CI среде необходимо передать PR_NUMBER как переменную окружения');
 }
 
+const repoName = process.env.GITHUB_REPOSITORY?.split('/')[1];
+
 export default defineConfig({
   testDir: './tests',
   use: {
-    baseURL: 'https://eshkere-aboba.github.io/test/pr-2',
+    baseURL: isCI
+      ? `https://${process.env.GITHUB_REPOSITORY_OWNER}.github.io/${repoName}/pr-${prNumber}`
+      : 'http://localhost:8080',
     screenshot: 'only-on-failure',
   },
   // webServer убираем полностью
