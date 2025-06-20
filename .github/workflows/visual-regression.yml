@@ -74,12 +74,13 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const pr = parseInt(inputs.pr_number)
-            const url = `☁️ Скриншоты: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
-            const success = process.env.JOB_STATUS === 'success'
+            const core = require('@actions/core');
+            const pr = parseInt(core.getInput('pr_number'));
+            const url = `☁️ Скриншоты: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const success = process.env.JOB_STATUS === 'success';
             const body = success
               ? `✅ Visual проверка пройдена`
-              : `❌ Visual ошибки. Посмотреть: ${url}`
+              : `❌ Visual ошибки. Посмотреть: ${url}`;
 
             await github.rest.issues.createComment({
               owner: context.repo.owner,
