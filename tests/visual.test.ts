@@ -4,8 +4,7 @@ const taskId = process.env.TASK_ID;
 if (!taskId) throw new Error('Не указана переменная окружения TASK_ID');
 
 test(`${taskId}`, async ({ page }) => {
-  await page.goto('/index.html');
-
+  await page.goto('/');
   const fileName = `${taskId}.png`;
 
   await expect(page).toHaveScreenshot(fileName, {
