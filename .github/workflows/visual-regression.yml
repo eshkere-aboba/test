@@ -40,7 +40,7 @@ jobs:
         run: npm ci
 
       - name: Wait for deployed preview
-        run: node scripts/wait-for-url.js "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-${{ github.event.inputs.pr_number }}/"
+        run: node tests/wait-for-url.js "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-${{ github.event.inputs.pr_number }}/"
 
       - name: Run Playwright tests
         env:

@@ -1,4 +1,3 @@
-// scripts/wait-for-url.js
 import https from 'https';
 
 const url = process.argv[2];
