@@ -58,3 +58,30 @@ jobs:
         with:
           name: visual-diff-${{ github.event.inputs.task_id }}
           path: test-results/
+
+      - name: Загрузить результаты
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-diff-${{ inputs.task_id }}
+          path: test-results/
+
+      - name: Комментировать PR
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = parseInt(inputs.pr_number)
+            const url = `☁️ Скриншоты: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
+            const success = process.env.JOB_STATUS === 'success'
+            const body = success
+              ? `✅ Visual проверка пройдена`
+              : `❌ Visual ошибки. Посмотреть: ${url}`
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr,
+              body
+            });
