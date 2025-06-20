@@ -18,8 +18,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout PR branch
         uses: actions/checkout@v4
+        with:
+          ref: refs/pull/${{ github.event.inputs.pr_number }}/head
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -36,11 +38,12 @@ jobs:
           PR_NUMBER: ${{ github.event.inputs.pr_number }}
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          CI: true
         run: |
           npx playwright install --with-deps
           npx playwright test tests/visual.test.ts
 
-      - name: Upload test results
+      - name: Upload visual diff
         if: always()
         uses: actions/upload-artifact@v4
         with:
