@@ -10,9 +10,7 @@ if (!prNumber && isCI) {
 export default defineConfig({
   testDir: './tests',
   use: {
-    baseURL: isCI
-      ? `https://${process.env.GITHUB_REPOSITORY_OWNER}.github.io/${process.env.GITHUB_REPOSITORY?.split('/')[1]}/pr-${prNumber}`
-      : 'http://localhost:8080',
+    baseURL: 'https://eshkere-aboba.github.io/test/pr-2',
     screenshot: 'only-on-failure',
   },
   // webServer убираем полностью
