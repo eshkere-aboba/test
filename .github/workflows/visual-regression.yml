@@ -36,10 +36,8 @@ jobs:
         env:
           TASK_ID: ${{ github.event.inputs.task_id }}
           PR_NUMBER: ${{ github.event.inputs.pr_number }}
-          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           CI: true
-          BASE_URL: https://${{ github.repository_owner }}.github.io/${{ github.repository }}.split('/')[1]/pr-${{ github.event.inputs.pr_number }}
         run: |
           npx playwright install --with-deps
           npx playwright test tests/visual.test.ts
