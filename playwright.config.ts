@@ -2,30 +2,31 @@ import { defineConfig } from '@playwright/test';
 
 const prNumber = process.env.PR_NUMBER;
 const isCI = Boolean(process.env.CI);
-
-if (!prNumber && isCI) {
-  throw new Error('В CI среде необходимо передать PR_NUMBER как переменную окружения');
-}
-
 const repoName = process.env.GITHUB_REPOSITORY?.split('/')[1];
+
+const baseURL = isCI
+  ? `https://${process.env.GITHUB_REPOSITORY_OWNER}.github.io/${repoName}/pr-${prNumber}`
+  : 'http://localhost:8080';
 
 export default defineConfig({
   testDir: './tests',
   use: {
-    baseURL: isCI
-      ? `https://${process.env.GITHUB_REPOSITORY_OWNER}.github.io/${repoName}/pr-${prNumber}`
-      : 'http://localhost:8080',
     screenshot: 'only-on-failure',
   },
-  // webServer убираем полностью
   projects: [
     {
       name: 'desktop',
-      use: { viewport: { width: 1440, height: 900 } },
+      use: {
+        viewport: { width: 1440, height: 900 },
+        baseURL,
+      },
     },
     {
       name: 'mobile',
-      use: { viewport: { width: 475, height: 800 } },
+      use: {
+        viewport: { width: 475, height: 800 },
+        baseURL,
+      },
     },
   ],
 });
