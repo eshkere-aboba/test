@@ -1,14 +1,14 @@
 import { defineConfig } from '@playwright/test';
 
-const isCI = Boolean(process.env.CI);
 const prNumber = process.env.PR_NUMBER;
+const isCI = Boolean(process.env.CI);
 const repo = process.env.GITHUB_REPOSITORY;
+const [owner, repoName] = repo?.split('/') || [];
 
-if (isCI && (!prNumber || !repo)) {
-  throw new Error('В CI необходимо указать PR_NUMBER и GITHUB_REPOSITORY');
+if (isCI && (!prNumber || !owner || !repoName)) {
+  throw new Error('В CI нужно задать PR_NUMBER и GITHUB_REPOSITORY');
 }
 
-const [owner, repoName] = repo?.split('/') || [];
 const baseURL = isCI
   ? `https://${owner}.github.io/${repoName}/pr-${prNumber}/`
   : 'http://localhost:8080/';
