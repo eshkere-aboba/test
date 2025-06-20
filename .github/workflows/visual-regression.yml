@@ -67,6 +67,8 @@ jobs:
           path: test-results/
 
       - name: Комментировать PR
+        env:
+          JOB_STATUS: ${{ job.status }}
         if: ${{ github.event_name == 'workflow_dispatch' }}
         uses: actions/github-script@v6
         with:
