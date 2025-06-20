@@ -18,10 +18,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout PR branch
+      - name: Checkout test config only
         uses: actions/checkout@v4
         with:
-          ref: refs/pull/${{ github.event.inputs.pr_number }}/head
+          sparse-checkout: |
+            tests/
+            playwright.config.ts
+            package.json
+            package-lock.json
+            tsconfig.json
+            scripts/
+            .github/
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -32,21 +39,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Wait for deployed PR preview to become available
-        run: |
-          node tests/wait-for-url.js "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-${{ github.event.inputs.pr_number }}/"
+      - name: Wait for deployed preview
+        run: node scripts/wait-for-url.js "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-${{ github.event.inputs.pr_number }}/"
 
-      - name: Run Playwright visual tests
+      - name: Run Playwright tests
         env:
-          TASK_ID: ${{ github.event.inputs.task_id }}
           PR_NUMBER: ${{ github.event.inputs.pr_number }}
+          TASK_ID: ${{ github.event.inputs.task_id }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           CI: true
         run: |
           npx playwright install --with-deps
-          npx playwright test tests/visual.test.ts
+          npx playwright test
 
-      - name: Upload visual diff
+      - name: Upload diffs
         if: always()
         uses: actions/upload-artifact@v4
         with:
